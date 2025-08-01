@@ -92,7 +92,7 @@
       "typeVersion": 2,
       "position": [
         -144,
-        560
+        624
       ],
       "id": "7625d41a-8eca-4b5f-8d3b-1acc332b1fcc",
       "name": "Webhook from LINE API",
@@ -100,13 +100,13 @@
     },
     {
       "parameters": {
-        "jsCode": "let requests\nlet message = {}\nfor (const item of $input.all()) {\n  requests = item.json.body\n}\nif ('events' in requests) {\n  if ('message' in requests['events'][0]) {\n    if (requests['events'][0]['message']['type'] == 'text' &&\n        'text' in requests['events'][0]['message']) {\n      // Set environment variable\n      $vars.replyToken = requests['events'][0]['replyToken']\n      \n      message = {\n        'chatInput': requests['events'][0]['message']['text'],\n        'replyToken': requests['events'][0]['replyToken']\n      }\n    }\n  }\n}\nreturn message"
+        "jsCode": "let requests\nlet message = {}\nfor (const item of $input.all()) {\n  requests = item.json.body\n}\nif ('events' in requests) {\n  if ('message' in requests['events'][0]) {\n    if (requests['events'][0]['message']['type'] == 'text' &&\n        'text' in requests['events'][0]['message']) {\n      // Set environment variable\n      $vars.LINE_REPLY_TOKEN = requests['events'][0]['replyToken']\n      \n      message = {\n        'chatInput': requests['events'][0]['message']['text'],\n        'replyToken': requests['events'][0]['replyToken']\n      }\n    }\n  }\n}\nreturn message"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        272,
-        560
+        400,
+        688
       ],
       "id": "9233fe19-25ff-4b2e-866c-84a6f4e666c0",
       "name": "Code"
@@ -134,8 +134,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1104,
-        560
+        1328,
+        624
       ],
       "id": "38298b06-74c8-4af1-a48c-f6fe88388dbc",
       "name": "HTTP Request",
@@ -174,7 +174,7 @@
       "typeVersion": 2.2,
       "position": [
         64,
-        560
+        624
       ],
       "id": "6cfba1e1-0a4d-4e1d-b060-3b9294501543",
       "name": "If"
@@ -191,8 +191,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        560,
-        768
+        912,
+        832
       ],
       "id": "42219f82-f5e8-4493-8564-2e0d221f4439",
       "name": "OpenAI Chat Model",
@@ -212,13 +212,28 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.1,
       "position": [
-        560,
-        560
+        912,
+        624
       ],
       "id": "d4647499-1fbb-409d-bbcd-6d64f75f48be",
       "name": "AI Agent2",
       "executeOnce": false,
       "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"chatInput\": \"{{ $json.body.events[0].message.text }}\",\n  \"replyToken\": \"{{ $json.body.events[0].replyToken }}\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        464
+      ],
+      "id": "878001de-1313-4240-949a-dae3526748b1",
+      "name": "Edit Fields"
     }
   ],
   "pinData": {},
@@ -287,11 +302,17 @@
       "main": [
         [
           {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
             "node": "Code",
             "type": "main",
             "index": 0
           }
-        ]
+        ],
+        []
       ]
     },
     "OpenAI Chat Model": {
@@ -315,11 +336,16 @@
           }
         ]
       ]
+    },
+    "Edit Fields": {
+      "main": [
+        []
+      ]
     }
   },
   "active": false,
   "settings": {},
-  "versionId": "6ea4a6a9-7123-4e7f-8141-07b39bfc5dd0",
+  "versionId": "f42e9a60-d413-4776-b0d8-263f75d7b0ec",
   "meta": {
     "templateId": "035_template_onboarding-agent_with_memory",
     "templateCredsSetupCompleted": true,

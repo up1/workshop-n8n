@@ -100,12 +100,12 @@
     },
     {
       "parameters": {
-        "jsCode": "let requests\nlet message = {}\nfor (const item of $input.all()) {\n  requests = item.json.body\n}\nif ('events' in requests) {\n  if ('message' in requests['events'][0]) {\n    if (requests['events'][0]['message']['type'] == 'text' &&\n        'text' in requests['events'][0]['message']) {\n      message = {\n        'text': requests['events'][0]['message']['text'],\n        'replyToken': requests['events'][0]['replyToken']\n      }\n    }\n  }\n}\nreturn message"
+        "jsCode": "let requests\nlet message = {}\nfor (const item of $input.all()) {\n  requests = item.json.body\n}\nif ('events' in requests) {\n  if ('message' in requests['events'][0]) {\n    if (requests['events'][0]['message']['type'] == 'text' &&\n        'text' in requests['events'][0]['message']) {\n      // Set environment variable\n      $vars.replyToken = requests['events'][0]['replyToken']\n      \n      message = {\n        'chatInput': requests['events'][0]['message']['text'],\n        'replyToken': requests['events'][0]['replyToken']\n      }\n    }\n  }\n}\nreturn message"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        64,
+        272,
         560
       ],
       "id": "9233fe19-25ff-4b2e-866c-84a6f4e666c0",
@@ -128,13 +128,13 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"replyToken\": \"{{$node[\"Code\"].json[\"replyToken\"]}}\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"{{$node[\"Code\"].json[\"text\"]}}\"\n    }\n  ]\n}",
+        "jsonBody": "={\n  \"replyToken\": \"{{$node[\"Code\"].json[\"replyToken\"]}}\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"{{$node[\"AI Agent2\"].json[\"output\"]}}\"\n    }\n  ]\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        272,
+        1104,
         560
       ],
       "id": "38298b06-74c8-4af1-a48c-f6fe88388dbc",
@@ -145,6 +145,80 @@
           "name": "Header Auth account"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3a97aa19-4ea9-4c2a-8491-4e61f884647b",
+              "leftValue": "={{ $json.body.events[0].type }}",
+              "rightValue": "message",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        64,
+        560
+      ],
+      "id": "6cfba1e1-0a4d-4e1d-b060-3b9294501543",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        768
+      ],
+      "id": "42219f82-f5e8-4493-8564-2e0d221f4439",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "NmnbtbMiwvu65Agk",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Instruction:\nAnswer the question as truthfully as possible using the provided text, and if the answer is not contained within the text below, say \"I don't know\"\n\nContext : มุกตลกคาเฟ่\n\nQ : ภาษาอังกฤษพูดได้ไหม\nA : พูดได้\n\nQ: สีเหลือง\nA: เยลโล่\n\nQ: มะม่วง \nA: แมงโก้\n\nQ: เตา\nA: อั้งโล่\n\nQ: มีด \nA: อีโต้\n\nQ: ไฮลักซ์ \nA: รีโว่\n\nQ: รองเท้า \nA: กีโต้\n\nQ: มอไซด์ \nA: ฟิลาโน่\n\nQ: ดารา \nA: โตโน่\n\nQ: กรดเกิน \nA: อีโน\n\nQ: น้ำส้ม \nA: ทิปโก้\n\nQ: ไฟแช็ค \nA: ซิปโป้\n\nQ: เสื้อนอก \nA: แอร์โร่\n\nQ: เสื้อใน \nA: วาโก้\n\nQ: ตกใจ \nA: โอ้ โห้\n\nQ: น่าทึ่ง \nA: เยดโด้วว\n\nQ: นักบอล \nA: โรนัลโด้\n\nQ: โทสับ \nA: วีโว่\n\nQ: เยลลี่ \nA: ปีโป้\n\nQ: ปั้มน้ำมัน \nA: เอสโซ่\n\nQ: แบงก์ \nA: กาโม่\n\nQ: ขนม \nA: ยูโร่\n\nQ: ของเล่น \nA: เลโก้\n\nQ: สามก๊ก \nA: ลิโป้\n\nQ: แกง\nA: พะโล้\n\nAre you ready to talk with me ?\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        560,
+        560
+      ],
+      "id": "d4647499-1fbb-409d-bbcd-6d64f75f48be",
+      "name": "AI Agent2",
+      "executeOnce": false,
+      "alwaysOutputData": false
     }
   ],
   "pinData": {},
@@ -186,7 +260,7 @@
       "main": [
         [
           {
-            "node": "Code",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -197,7 +271,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "AI Agent2",
             "type": "main",
             "index": 0
           }
@@ -208,11 +282,44 @@
       "main": [
         []
       ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {},
-  "versionId": "18fbd880-84ae-48b9-87e6-cd1e0a5d80fd",
+  "versionId": "6ea4a6a9-7123-4e7f-8141-07b39bfc5dd0",
   "meta": {
     "templateId": "035_template_onboarding-agent_with_memory",
     "templateCredsSetupCompleted": true,

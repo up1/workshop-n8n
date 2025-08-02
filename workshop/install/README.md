@@ -25,16 +25,14 @@ Access to n8n
 * http://localhost:5678/
 
 ## [n8n with tunnel](https://docs.n8n.io/hosting/installation/docker/#n8n-with-tunnel)
-
-```
-
-```
+* For development only
 
 Other tools
 * [ngrok](https://ngrok.com/)
+* [Cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
 
 
-## Bot supported features
+## Not supported features
 
 ### Variables
 * Use environment variable

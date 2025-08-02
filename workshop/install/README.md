@@ -17,6 +17,8 @@ Access to n8n
 ## Docker :: n8n with database
 * [Database settings](https://docs.n8n.io/hosting/configuration/supported-databases-settings/#postgresdb)
   * Default = SQLite
+* [Monitoring and logging](https://docs.n8n.io/hosting/logging-monitoring/logging/)
+
 ```
 $docker compose up -d postgres
 $docker compose up -d n8n

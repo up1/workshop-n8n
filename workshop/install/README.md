@@ -3,7 +3,12 @@
 
 ## NodeJS
 ```
-$npx n8n
+$npx n8n start --tunnel
+
+or 
+
+$npm install n8n -g
+$n8n start --tunnel
 ```
 Access to n8n
 * http://localhost:5678/

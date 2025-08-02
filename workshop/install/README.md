@@ -17,3 +17,11 @@ $docker compose ps
 
 Access to n8n
 * http://localhost:5678/
+
+## Bot supported features
+
+### Variables
+* Use environment variable
+```
+{{ $env.LINE_ACCESS_TOKEN }}
+```

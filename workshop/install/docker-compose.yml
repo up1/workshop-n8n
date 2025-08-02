@@ -1,0 +1,73 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    restart: always
+    ports:
+      - "5678:5678"
+    env_file:
+      - .env
+    environment:
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=${N8N_PORT:-5678}
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - NODE_ENV=${NODE_ENV:-production}
+      - DB_TYPE=${DB_TYPE:-postgresdb}
+      - DB_POSTGRESDB_HOST=${DB_POSTGRESDB_HOST:-postgres}
+      - DB_POSTGRESDB_PORT=${DB_POSTGRESDB_PORT:-5432}
+      - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE:-n8n}
+      - DB_POSTGRESDB_USER=${DB_POSTGRESDB_USER:-n8n}
+      - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD:-n8n}
+      - LINE_ACCESS_TOKEN=${LINE_ACCESS_TOKEN:-}
+      - N8N_LOG_LEVEL=debug
+      - N8N_LOG_OUTPUT=console,file
+      - N8N_LOG_FILE_PATH=/home/node/.n8n/n8n.log
+      - N8N_LOG_FILE_MAXSIZE=50
+      - N8N_LOG_FILE_MAXCOUNT=60
+
+
+
+    volumes:
+      - ./datas/n8n:/home/node/.n8n
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - n8n-tools
+
+  postgres:
+    image: postgres:17
+    restart: always
+    # env_file:
+    #   - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-n8n}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-n8n}
+      - POSTGRES_DB=${POSTGRES_DB:-n8n}
+      - POSTGRES_NON_ROOT_USER=${POSTGRES_NON_ROOT_USER:-n8n}
+      - POSTGRES_NON_ROOT_PASSWORD=${POSTGRES_NON_ROOT_PASSWORD:-n8n}
+    volumes:
+      - ./datas/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-n8n}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - n8n-tools
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: always
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    # env_file:
+    #   - .env
+    volumes:
+      - ./datas/qdrant:/qdrant/storage
+    networks:
+      - n8n-tools
+
+networks:
+  n8n-tools:
+    driver: bridge

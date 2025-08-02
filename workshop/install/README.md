@@ -1,0 +1,19 @@
+# Self-host n8n
+
+## NodeJS
+```
+$npx n8n
+```
+Access to n8n
+* http://localhost:5678/
+
+
+## Docker
+```
+$docker compose up -d postgres
+$docker compose up -d n8n
+$docker compose ps
+```
+
+Access to n8n
+* http://localhost:5678/

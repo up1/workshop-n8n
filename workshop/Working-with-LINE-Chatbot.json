@@ -1,0 +1,72 @@
+{
+  "name": "Working-with-LINE-Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "69d0ed3e-9ece-447c-a3b5-a14c15b8cca8",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -304,
+        -96
+      ],
+      "id": "d708820b-bbe7-46d9-92cb-162332e492f5",
+      "name": "Webhook",
+      "webhookId": "69d0ed3e-9ece-447c-a3b5-a14c15b8cca8"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.LINE_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"replyToken\": \"{{ $json.body.events[0].replyToken }}\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"Hello, {{ $json.body.events[0].message.text }}\"\n    }\n  ]\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        32,
+        -96
+      ],
+      "id": "4895dc6b-d1df-43f8-b458-bcc6a81c7d8f",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fb4210a0-ddc6-4e5a-ad65-06be606d71d6",
+  "meta": {
+    "instanceId": "c095b8954891635bdbfc24cd0c2259a787ae895013251c6f44d1a3f9836ad368"
+  },
+  "id": "e5Tgkz4SXjD4GrRU",
+  "tags": []
+}

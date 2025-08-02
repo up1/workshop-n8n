@@ -1,4 +1,5 @@
 # Self-host n8n
+* https://docs.n8n.io/hosting/
 
 ## NodeJS
 ```

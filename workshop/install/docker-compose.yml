@@ -23,8 +23,9 @@ services:
       - N8N_LOG_FILE_PATH=/home/node/.n8n/n8n.log
       - N8N_LOG_FILE_MAXSIZE=50
       - N8N_LOG_FILE_MAXCOUNT=60
-
-
+      - N8N_LOG_FILE_COMPRESSION=true
+      - N8N_METRICS=true
+      - QUEUE_HEALTH_CHECK_ACTIVE=true
 
     volumes:
       - ./datas/n8n:/home/node/.n8n

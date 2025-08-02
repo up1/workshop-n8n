@@ -49,3 +49,15 @@ $docker compose ps
 
 List of URLs
 * [Qdrant Dashboard](http://localhost:6333/dashboard)
+
+Create collection
+```
+curl -X PUT 'http://localhost:6333/collections/my_collection' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "vectors": {
+      "size": 384,
+      "distance": "Cosine"
+    }
+  }'
+```

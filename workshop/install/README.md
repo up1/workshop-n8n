@@ -39,3 +39,13 @@ Other tools
 ```
 {{ $env.LINE_ACCESS_TOKEN }}
 ```
+
+## Start Vector Database
+* [Qdrant](https://qdrant.tech/)
+```
+$docker compose up -d qdrant
+$docker compose ps
+```
+
+List of URLs
+* [Qdrant Dashboard](http://localhost:6333/dashboard)

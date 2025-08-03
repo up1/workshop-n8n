@@ -70,6 +70,19 @@
           "name": "OpenAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json[\"text\"];\nconst raw_json = raw.replace(/```json\\n?|```/g, \"\").trim();\n\nconst my_json = JSON.parse(raw_json);\n\nreturn {\n  book_id: my_json.book_id,\n  signed_by: my_json.signed_by,\n  signed_position: my_json.signed_position,\n  contact: {\n    \"phone\": my_json.contact_phone,\n    \"email\": my_json.contact_email,\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        -96
+      ],
+      "id": "c089d8c9-bc39-4159-9e35-11ecd225813e",
+      "name": "Code"
     }
   ],
   "pinData": {},
@@ -106,13 +119,24 @@
           }
         ]
       ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "b895d249-99aa-4019-9004-864a95524ce4",
+  "versionId": "9742c0ee-d3f1-4ad4-91de-5c979fdcf013",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "c095b8954891635bdbfc24cd0c2259a787ae895013251c6f44d1a3f9836ad368"

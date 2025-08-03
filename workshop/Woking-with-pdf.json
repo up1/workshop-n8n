@@ -103,7 +103,7 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.2,
       "position": [
-        -352,
+        -400,
         400
       ],
       "id": "c1671638-328f-44ba-b558-a1cc0b9150d0",
@@ -137,6 +137,34 @@
       ],
       "id": "c0df44ca-ac43-41ab-bfeb-412e4cdeb5f9",
       "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=ทำการสร้างข้อมูลในรูปแบบ JSON  จากข้อมูลใน section [Data] ซึ่งเป็นหนังสือราชการ ให้แยกหัวข้อสำคัญออกมา\nโดยรูปแบบของ JSON จะเป็นดังนี้:\n1. book_id: เลขที่ของหนังสือ\n2. date: วันที่ในเอกสาร\n3. subject: หัวข้อของหนังสือ\n4. to: เรียน\n5. attach: สิ่งที่ส่งมาด้วย\n6. signed_by: ผู้ลงนาม\n7. signed_position: ตำแหน่งของผู้ลงนาม\n8. contact_phone: เบอร์โทรศัพท์ติดต่อ\n9. contact_email: อีเมลติดต่อ\n\n\n[Data]\n{{ $json.result }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        144,
+        400
+      ],
+      "id": "113b491c-49e9-4c7e-bcad-456cde75ca60",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json[\"text\"];\nconst raw_json = raw.replace(/```json\\n?|```/g, \"\").trim();\n\nconst my_json = JSON.parse(raw_json);\n\nreturn {\n  book_id: my_json.book_id,\n  date: my_json.date,\n  signed_by: my_json.signed_by,\n  signed_position: my_json.signed_position,\n  contact: {\n    \"phone\": my_json.contact_phone,\n    \"email\": my_json.contact_email,\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        400
+      ],
+      "id": "fef28bd4-cd24-45cd-a18d-dbc7c9075203",
+      "name": "Code1"
     }
   ],
   "pinData": {},
@@ -170,6 +198,11 @@
             "node": "Basic LLM Chain",
             "type": "ai_languageModel",
             "index": 0
+          },
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
           }
         ]
       ]
@@ -198,7 +231,24 @@
     },
     "HTTP Request": {
       "main": [
-        []
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -206,7 +256,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "825e4bf4-c509-4097-84b6-80e39a9b25b9",
+  "versionId": "c71f9d8d-9259-43e3-bd35-f05886f218e7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "c095b8954891635bdbfc24cd0c2259a787ae895013251c6f44d1a3f9836ad368"

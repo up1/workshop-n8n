@@ -83,6 +83,60 @@
       ],
       "id": "c089d8c9-bc39-4159-9e35-11ecd225813e",
       "name": "Code"
+    },
+    {
+      "parameters": {
+        "formTitle": "Upload file",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "PDF File",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".pdf",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -352,
+        400
+      ],
+      "id": "c1671638-328f-44ba-b558-a1cc0b9150d0",
+      "name": "On form submission",
+      "webhookId": "507fe41d-4e06-4784-b2a3-8d4ba2909036"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://b9aad1cb35e2.ngrok-free.app/process",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "PDF_File"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -112,
+        400
+      ],
+      "id": "c0df44ca-ac43-41ab-bfeb-412e4cdeb5f9",
+      "name": "HTTP Request"
     }
   ],
   "pinData": {},
@@ -130,13 +184,29 @@
           }
         ]
       ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "9742c0ee-d3f1-4ad4-91de-5c979fdcf013",
+  "versionId": "825e4bf4-c509-4097-84b6-80e39a9b25b9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "c095b8954891635bdbfc24cd0c2259a787ae895013251c6f44d1a3f9836ad368"

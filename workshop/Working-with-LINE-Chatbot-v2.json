@@ -1,0 +1,166 @@
+{
+  "name": "Working-with-LINE-Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# สีเหลือง",
+        "height": 112,
+        "width": 160
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -464,
+        80
+      ],
+      "typeVersion": 1,
+      "id": "92269309-be52-4e23-a0db-ab66a2ea42fb",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# เยลโล่",
+        "height": 144,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        256,
+        80
+      ],
+      "typeVersion": 1,
+      "id": "59d1e757-239f-4538-a5dd-3649e59c90a3",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -192,
+        176
+      ],
+      "id": "d0e1ebfe-5b82-4002-9675-b11a5381c6b5",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "nJt3cBB5WfxUu31S",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "69d0ed3e-9ece-447c-a3b5-a14c15b8cca8",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        -96
+      ],
+      "id": "d708820b-bbe7-46d9-92cb-162332e492f5",
+      "name": "Called Webhook from LINE",
+      "webhookId": "69d0ed3e-9ece-447c-a3b5-a14c15b8cca8"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.LINE_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"replyToken\": \"{{ $('Called Webhook from LINE').item.json.body.events[0].replyToken }}\",\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"{{ $json.output }}\"\n    }\n  ]\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        272,
+        -96
+      ],
+      "id": "4895dc6b-d1df-43f8-b458-bcc6a81c7d8f",
+      "name": "Reply message to LINE"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.events[0].message.text }}",
+        "options": {
+          "systemMessage": "Instruction:\nAnswer the question as truthfully as possible using the provided text, and if the answer is not contained within the text below, say \"I don't know\"\n\nContext : มุกตลกคาเฟ่\n\nQ : ภาษาอังกฤษพูดได้ไหม\nA : พูดได้\n\nQ: สีเหลือง\nA: เยลโล่\n\nQ: มะม่วง \nA: แมงโก้\n\nQ: เตา\nA: อั้งโล่\n\nQ: มีด \nA: อีโต้\n\nQ: ไฮลักซ์ \nA: รีโว่\n\nQ: รองเท้า \nA: กีโต้\n\nQ: มอไซด์ \nA: ฟิลาโน่\n\nQ: ดารา \nA: โตโน่\n\nQ: กรดเกิน \nA: อีโน\n\nQ: น้ำส้ม \nA: ทิปโก้\n\nQ: ไฟแช็ค \nA: ซิปโป้\n\nQ: เสื้อนอก \nA: แอร์โร่\n\nQ: เสื้อใน \nA: วาโก้\n\nQ: ตกใจ \nA: โอ้ โห้\n\nQ: น่าทึ่ง \nA: เยดโด้วว\n\nQ: นักบอล \nA: โรนัลโด้\n\nQ: โทสับ \nA: วีโว่\n\nQ: เยลลี่ \nA: ปีโป้\n\nQ: ปั้มน้ำมัน \nA: เอสโซ่\n\nQ: แบงก์ \nA: กาโม่\n\nQ: ขนม \nA: ยูโร่\n\nQ: ของเล่น \nA: เลโก้\n\nQ: สามก๊ก \nA: ลิโป้\n\nQ: แกง\nA: พะโล้\n\nAre you ready to talk with me ?\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -192,
+        -96
+      ],
+      "id": "565b8b78-6a6c-435f-b820-0f9798ec9f6d",
+      "name": "AI Agent for มุกตลก cafe"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent for มุกตลก cafe",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Called Webhook from LINE": {
+      "main": [
+        [
+          {
+            "node": "AI Agent for มุกตลก cafe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent for มุกตลก cafe": {
+      "main": [
+        [
+          {
+            "node": "Reply message to LINE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "58e8d111-3399-463f-85c5-967df3b04920",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c095b8954891635bdbfc24cd0c2259a787ae895013251c6f44d1a3f9836ad368"
+  },
+  "id": "e5Tgkz4SXjD4GrRU",
+  "tags": []
+}

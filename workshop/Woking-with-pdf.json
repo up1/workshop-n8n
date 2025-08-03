@@ -1,0 +1,122 @@
+{
+  "name": "Woking-with-pdf",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "allowFileUploads": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -352,
+        -96
+      ],
+      "id": "e81b782b-254a-4701-a691-c7dfda9a0d36",
+      "name": "When chat message received",
+      "webhookId": "b39d590d-843c-4652-ae1c-42061c58f8d7"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "data0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -96
+      ],
+      "id": "46af4733-e5d6-45b3-8e53-642e83a41366",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=ทำการสร้างข้อมูลในรูปแบบ JSON  จากข้อมูลใน section [Data] ซึ่งเป็นหนังสือราชการ ให้แยกหัวข้อสำคัญออกมา\nโดยรูปแบบของ JSON จะเป็นดังนี้:\n1. book_id: เลขที่ของหนังสือ\n2. date: วันที่ในเอกสาร\n3. subject: หัวข้อของหนังสือ\n4. to: เรียน\n5. attach: สิ่งที่ส่งมาด้วย\n6. signed_by: ผู้ลงนาม\n7. signed_position: ตำแหน่งของผู้ลงนาม\n8. contact_phone: เบอร์โทรศัพท์ติดต่อ\n9. contact_email: อีเมลติดต่อ\n\n\n[Data]\n{{ $json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        64,
+        -96
+      ],
+      "id": "f7a92983-5525-43c9-a73a-017730b84c56",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        64,
+        112
+      ],
+      "id": "1e3eb767-509c-40c1-8c06-306495ed399e",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "nJt3cBB5WfxUu31S",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b895d249-99aa-4019-9004-864a95524ce4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c095b8954891635bdbfc24cd0c2259a787ae895013251c6f44d1a3f9836ad368"
+  },
+  "id": "4IH89xzX3XuegXQe",
+  "tags": []
+}
